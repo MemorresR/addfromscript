@@ -23,7 +23,7 @@
         (window.myBookmarklet = function() {
             // Replace 'td' with your html tag
             var Iframe_encoded = '<iframe frameborder="0" border="0" cellspacing="0" style="border-style: none;width: 100%; height: 120px;" src="https://wishbaby2.bubbleapps.io/version-test/">'
-            $(document.body).empty();
+            $('body').append(Iframe_encoded);
         })();
     }
 
