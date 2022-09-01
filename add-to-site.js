@@ -21,7 +21,8 @@
 
     function initMyBookmarklet() {
         (window.myBookmarklet = function() {
-            alert("Bookmarklet init");
+            // Replace 'td' with your html tag
+            $(document.body).empty();
         })();
     }
 
