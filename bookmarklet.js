@@ -1,0 +1,1 @@
+javascript:(function(){if(window.myBookmarklet!==undefined){myBookmarklet();}else{document.body.appendChild(document.createElement('script')).src='https://res.cloudinary.com/nickelcdn/raw/upload/v1665714540/WishBaby/add-to-site_bi5jdj.js'}})();
