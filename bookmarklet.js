@@ -1,1 +1,1 @@
-javascript:(function(){if(window.myBookmarklet!==undefined){myBookmarklet();}else{document.body.appendChild(document.createElement('script')).src='https://res.cloudinary.com/nickelcdn/raw/upload/v1665714540/WishBaby/add-to-site_bi5jdj.js'}})();
+javascript:(function(){if(window.myBookmarklet!==undefined){myBookmarklet();}else{document.body.appendChild(document.createElement('script')).src='https://res.cloudinary.com/ddo6legmx/raw/upload/v1669793834/Wishbaby/add-to-site_woul5e.js';}})();
