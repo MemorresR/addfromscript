@@ -17,7 +17,7 @@ javascript:(function(){
 
 
     var element = document.createElement("script");
-    element.src = "https://res.cloudinary.com/nickelcdn/raw/upload/v1670272210/WishBaby/add-to-site_yugvfm.js";
+    element.src = "https://res.cloudinary.com/ddo6legmx/raw/upload/v1670532702/Wishbaby/add-to-site_rb6smu.js";
 
     element.onerror = (error) => {
       window.location = locationSrc+"/?referred=true&productUrl="+getCurrentURL()+"&title="+getProductTitle();

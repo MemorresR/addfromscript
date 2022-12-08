@@ -24,7 +24,7 @@
     "URL": "productUrl"
   };
 
-
+  var productImageCollection = [];
   const NewDOMEl = (tag, prop) => Object.assign(document.createElement(tag), prop);
   var pageData=null;
 
@@ -32,6 +32,34 @@
     * Data scrap
     * @supports Amazon, Target, Etsy
     */
+
+  /* ========== SCRAP META DATA ==================== */
+  function getMetaData() {
+    const metaElem = document.querySelectorAll("script[type='application/ld+json']");
+    var metaData = null;
+    if( metaElem.length > 0 ) {
+      metaElem.forEach( ( ele ) => {
+        const metaProductData = JSON.parse(ele.text);
+        if ( metaProductData.length !== undefined ) {
+          metaProductData.forEach( ( ele )=> {
+            if( ele["@type"] == "Product" ) {
+              metaData = ele;
+            }
+          })
+        }
+        // metaProductData.forEach( (ele) => {
+        //   console.log(ele);
+        // })
+        if( metaProductData["@type"] == "Product" ) {
+          metaData = metaProductData;
+          //console.log(metaData);
+        }
+      })
+    }
+    return metaData;
+  }
+  var productMeta = getMetaData();
+  /* ========== SCRAP META DATA ENDS =============== */
 
   function getCurrentURL () {
     return window.location.href
@@ -103,7 +131,6 @@
   function getAmazonProductImages() {
     const parent = document.getElementById("imageBlock_feature_div");
     const thumbnailNodeList = parent.getElementsByClassName("imageThumbnail");
-    var productImageCollection = [];
 
     if (thumbnailNodeList == null ) {
       return;
@@ -156,7 +183,6 @@
 
     function getTargetProductImages() {
       const thumbnailNodeList = document.querySelectorAll(".styles__CarouselProductThumbnailWrapper-sc-1qcdgub-1 > button");
-      let productImageCollection = [];
       if( thumbnailNodeList == null ) {
         return;
       }
@@ -216,7 +242,6 @@
    function getEtsyProductImages() {
     const imageListContainer = document.querySelector(".image-carousel-container");
     const imageEleParent = imageListContainer.getElementsByTagName("li");
-    let productImageCollection = [];
     if( imageEleParent == null ) {
       return;
     }
@@ -245,14 +270,44 @@
 
   /*=========== ETSY DATA SCRAP ENDS ===============*/
 
+  
+  /*=========== DEFAULT DATA SCRAP STARTS ==========*/
+  function getDefaultPrice() {
+    //console.log( productMeta );
+    if( productMeta !== null ) {
+      var price = productMeta['offers']['price'];
+      if( price !== undefined ) {
+        return price;
+      }
+      else {
+        price = productMeta['offers'][0]['price'];
+        return price;
+      }
+    }
+    return null;
+  }
+
+  function getDefaultImages() {
+    if( productMeta !== null ) {
+      var img = productMeta['image'];
+      productImageCollection.push( img );
+      return productImageCollection;
+    }
+    else {
+      return productImageCollection;
+    }
+  }
+
   var scrapDefaultData = () => {
     return {
       [DataSchema.URL]: getCurrentURL(),
       [DataSchema.TITLE]: document.title,
-      [DataSchema.PRICE]: null,
-      [DataSchema.PRODUCT_IMAGES]: null
+      [DataSchema.PRICE]: getDefaultPrice(),
+      [DataSchema.PRODUCT_IMAGES]: getDefaultImages()
     }
   }
+  /* ========== DEFAULT DATA SCRAP ENDS ============= */
+
 
   var InitWbBookmarklet = () => {
     pageData = ScarpPage();
@@ -355,6 +410,11 @@
     })();
 
   }
+
+  //cors error
+  // document.onsecuritypolicyviolation = (event) => {
+  //   window.location = IframeSrc+"/?referred=true&productUrl="+encodeURIComponent(pageData.productUrl)+"&title="+encodeURIComponent(pageData.title);
+  // };
 
   // check prior inclusion and version
   var runShtick = () => {
