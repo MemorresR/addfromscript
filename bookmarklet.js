@@ -5,7 +5,7 @@ javascript:(function(){
 
   } else {
 
-    const locationSrc="https://wishbaby.com/version-test/bookmarklet";
+    const locationSrc="https://wishbaby.com/bookmarklet";
 
     var getCurrentURL = () => {
       return window.location.href;
@@ -17,7 +17,7 @@ javascript:(function(){
 
 
     var element = document.createElement("script");
-    element.src = "https://res.cloudinary.com/ddo6legmx/raw/upload/v1670532702/Wishbaby/add-to-site_rb6smu.js";
+    element.src = "https://res.cloudinary.com/ddo6legmx/raw/upload/v1670650567/Wishbaby/add-to-site_w0tl0v.js";
 
     element.onerror = (error) => {
       window.location = locationSrc+"/?referred=true&productUrl="+getCurrentURL()+"&title="+getProductTitle();
@@ -32,4 +32,5 @@ javascript:(function(){
 
     var body = document.body;
     body.appendChild(element);
-}})();
+}
+})();

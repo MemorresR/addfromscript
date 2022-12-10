@@ -3,9 +3,9 @@
   // the minimum version of jQuery we want
   const v = "1.3.2";
   // const IframeSrc = "https://wishbaby-new.bubbleapps.io/version-test/bookmarklet";
-  const IframeSrc = "https://wishbaby.com/version-test/bookmarklet";
+  const IframeSrc = "https://wishbaby.com/bookmarklet";
   const styles = Object.freeze({
-    "modal_container": "z-index: 298934723984; width: 100%; height: 100%; position: fixed; top:0; background-color: rgb(0 0 0 / 40%); padding: 10%; right: 0; left: 0; margin: 0 auto;display: flex;align-items: center;overflow: auto;",
+    "modal_container": "z-index: 298934723984; width: 100%; height: 100%; position: fixed; top:0; background-color: rgb(0 0 0 / 40%); right: 0; left: 0; margin: 0 auto;display: flex;align-items: center;overflow: auto;",
     "modal_main": "border-style: none; width: 740px; height: 600px; margin: 0 auto; position:relative; border-radius: 50px",
     "modal_button": "background-color: transparent; border: none;font-size: 20px;padding: 25px 30px;float: right;",
     "modal_header": "position: absolute; right: 0;",
@@ -23,7 +23,7 @@
     "PRODUCT_IMAGES": "productImages",
     "URL": "productUrl"
   };
-
+  var wishbabyModal = null;
   var productImageCollection = [];
   const NewDOMEl = (tag, prop) => Object.assign(document.createElement(tag), prop);
   var pageData=null;
@@ -47,12 +47,9 @@
             }
           })
         }
-        // metaProductData.forEach( (ele) => {
-        //   console.log(ele);
-        // })
+
         if( metaProductData["@type"] == "Product" ) {
           metaData = metaProductData;
-          //console.log(metaData);
         }
       })
     }
@@ -60,6 +57,21 @@
   }
   var productMeta = getMetaData();
   /* ========== SCRAP META DATA ENDS =============== */
+
+  /* ========== CLOSE IFRAME ON CLICK OUTSIDE IFRAME =========== */
+  document.addEventListener("click", (e) => {
+    // Check if the filter list parent element exist
+    if( elementExist( wishbabyModal ) == true ) {
+      //closest searches up the dom tree parent and ancestor for given css selector
+      const isClosest = e.target.closest("#wishbabymodal");
+      // then hide the popup
+      if (!isClosest) {
+        OnClickCloseEvent();
+      }
+    }
+  });
+
+  /* ========== END CLOSE IFRAME ON CLICK OUTSIDE IFRAME ========= */
 
   function getCurrentURL () {
     return window.location.href
@@ -270,17 +282,24 @@
 
   /*=========== ETSY DATA SCRAP ENDS ===============*/
 
-  
+  function testPrice( price ) {
+    return /^\d+(\.\d+)*$/g.test( price );
+  }
   /*=========== DEFAULT DATA SCRAP STARTS ==========*/
   function getDefaultPrice() {
-    //console.log( productMeta );
     if( productMeta !== null ) {
       var price = productMeta['offers']['price'];
       if( price !== undefined ) {
+        if( testPrice( price ) == true ) {
+          price = '$ '+price;
+        } 
         return price;
       }
       else {
         price = productMeta['offers'][0]['price'];
+        if( testPrice( price ) == true ) {
+          price = '$ '+price;
+        } 
         return price;
       }
     }
@@ -297,7 +316,7 @@
       return productImageCollection;
     }
   }
-
+  
   var scrapDefaultData = () => {
     return {
       [DataSchema.URL]: getCurrentURL(),
@@ -312,6 +331,7 @@
   var InitWbBookmarklet = () => {
     pageData = ScarpPage();
     setTimeout(AddWbModal(), 2000);
+    wishbabyModal = document.getElementById( 'wishbabymodal' );
   }
 
   var OnClickCloseEvent = () => {
@@ -412,9 +432,9 @@
   }
 
   //cors error
-  // document.onsecuritypolicyviolation = (event) => {
-  //   window.location = IframeSrc+"/?referred=true&productUrl="+encodeURIComponent(pageData.productUrl)+"&title="+encodeURIComponent(pageData.title);
-  // };
+  document.onsecuritypolicyviolation = (event) => {
+    window.location =  IframeWithParameters();
+  };
 
   // check prior inclusion and version
   var runShtick = () => {
@@ -424,8 +444,7 @@
       console.log("Mute case error");
       console.log(err);
     }
+    
   };
-
   runShtick();
-
 })();
